@@ -10,6 +10,7 @@
     "db-migrate-pg": "^0.1.11",
     "dotenv": "^4.0.0",
     "ejs": "2.3.4",
+    "fs-promise": "^2.0.2",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-coffee": "1.0.0",
@@ -26,6 +27,7 @@
     "node-uuid": "^1.4.8",
     "pg": "^6.1.5",
     "rc": "1.0.1",
+    "request-promise": "^4.2.0",
     "sails": "~0.12.13",
     "sails-db-migrate": "^1.5.0",
     "sails-disk": "~0.10.9",
@@ -38,11 +40,14 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "nodemon": "^1.11.0"
+    "mocha": "^3.3.0",
+    "nodemon": "^1.11.0",
+    "should": "^11.2.1"
   },
   "scripts": {
     "debug": "node debug app.js",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "test": "node node_modules/.bin/mocha test/bootstrap.test.js test/integration/**/*.test.js"
   },
   "main": "app.js",
   "author": "matthova",
