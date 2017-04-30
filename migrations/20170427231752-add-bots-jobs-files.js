@@ -9,7 +9,6 @@ exports.up = function(db, callback) {
         id: { type: 'string', primaryKey: true },
         name: 'string',
         model: 'string',
-        uuid: 'string',
 
         // The identifier is either an ip address endpoint or a pnpid
         endpoint: 'string',
@@ -31,7 +30,6 @@ exports.up = function(db, callback) {
     function (cb) {
       db.createTable('job', {
         id: { type: 'string', primaryKey: true },
-        uuid: 'string',
         botUuid: 'string',
         fileUuid: 'string',
         state: 'string',
@@ -47,7 +45,6 @@ exports.up = function(db, callback) {
         id: { type: 'string', primaryKey: true },
         filename: 'string',
         filepath: 'string',
-        uuid: 'string',
         createdAt: 'datetime',
         updatedAt: 'timestamp',
       }, cb);
