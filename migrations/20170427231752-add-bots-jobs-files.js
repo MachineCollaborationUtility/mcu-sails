@@ -6,7 +6,7 @@ exports.up = function(db, callback) {
   async.series([
     function (cb) {
       db.createTable('bot', {
-        id: { type: 'int', primaryKey: true, autoIncrement: true },
+        id: { type: 'string', primaryKey: true },
         name: 'string',
         model: 'string',
         uuid: 'string',
@@ -30,7 +30,7 @@ exports.up = function(db, callback) {
     },
     function (cb) {
       db.createTable('job', {
-        id: { type: 'int', primaryKey: true, autoIncrement: true },
+        id: { type: 'string', primaryKey: true },
         uuid: 'string',
         botUuid: 'string',
         fileUuid: 'string',
@@ -44,7 +44,7 @@ exports.up = function(db, callback) {
     },
     function (cb) {
       db.createTable('consumable', {
-        id: { type: 'int', primaryKey: true, autoIncrement: true },
+        id: { type: 'string', primaryKey: true },
         filename: 'string',
         filepath: 'string',
         uuid: 'string',
