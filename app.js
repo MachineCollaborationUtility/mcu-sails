@@ -23,6 +23,8 @@
 // no matter where we actually lift from.
 // > Note: This is not required in order to lift, but it is a convenient default.
 require('dotenv').config();
+global.Promise = require('bluebird');
+
 process.chdir(__dirname);
 
 // Attempt to import `sails`.
