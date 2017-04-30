@@ -24,11 +24,15 @@ module.exports = {
       }
 
       const files = await Promise.map(uploadedFiles, async (file) => {
+        const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/
+
+        const id = file.fd.match(uuidRegex)[0];
         const consumableObject = {
+          id,
           filepath: file.fd,
           filename: file.filename,
         };
-        await Consumable.create(consumableObject);
+        return await Consumable.create(consumableObject);
       })
       .catch(uploadError => res.negotiate(uploadError));
 
@@ -54,7 +58,7 @@ module.exports = {
       Consumable.destroy(req.param('id'), (destroyErr) => {
         if (destroyErr) { return next(destroyErr); }
         fs.unlink(consumable.filepath, (unlinkErr) => {
-          if (err) { return next(err); }
+          if (unlinkErr) { return next(unlinkErr); }
           return res.json(consumable);
         });
       });
