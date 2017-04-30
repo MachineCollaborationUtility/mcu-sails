@@ -10,8 +10,10 @@ const uuid = require('node-uuid');
 module.exports = {
   schema: true,
   attributes: {
-    uuid: {
+    id: {
       type: 'string',
+      primaryKey: true,
+      required: true,
       unique: true,
       uuidv4: true,
       defaultsTo: () => uuid.v4(),

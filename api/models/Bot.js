@@ -10,14 +10,16 @@ const uuid = require('node-uuid');
 module.exports = {
   schema: true,
   attributes: {
-    name: { type: 'string', required: true },
-    model: { type: 'string' },
-    uuid: {
+    id: {
       type: 'string',
+      primaryKey: true,
+      required: true,
       unique: true,
       uuidv4: true,
       defaultsTo: () => uuid.v4(),
     },
+    name: { type: 'string', required: true },
+    model: { type: 'string' },
     endpoint: { type: 'string' }, // The identifier is either an ip address endpoint or a pnpid
     jogXSpeed: { type: 'int', defaultsTo: 0 },
     jogYSpeed: { type: 'int', defaultsTo: 0 },
