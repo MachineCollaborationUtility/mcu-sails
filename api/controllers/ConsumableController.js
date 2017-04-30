@@ -6,6 +6,7 @@
  * @description :: Server-side logic for managing consumables
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const fs = require('fs');
 
 module.exports = {
 /**
@@ -43,5 +44,20 @@ module.exports = {
       return res.ok();
     }
     return res.json(consumable);
+  },
+
+  destroy: async function destroy(req, res, next) {
+    Consumable.findOne(req.param('id'), (err, consumable) => {
+      if (err) { return next(err); }
+      if (!consumable) { return next('Consumable doesn\'t exist.'); }
+
+      Consumable.destroy(req.param('id'), (destroyErr) => {
+        if (destroyErr) { return next(destroyErr); }
+        fs.unlink(consumable.filepath, (unlinkErr) => {
+          if (err) { return next(err); }
+          return res.json(consumable);
+        });
+      });
+    });
   },
 };
