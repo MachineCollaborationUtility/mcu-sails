@@ -1,3 +1,3 @@
-# mcu2
+# Machine Collaboration Utility
 
 a [Sails](http://sailsjs.org) application
