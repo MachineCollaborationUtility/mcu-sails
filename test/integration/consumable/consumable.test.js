@@ -3,74 +3,45 @@ const should = require('should');
 // const request = require('request-promise');
 const fs = require('fs-promise');
 const path = require('path');
-const request = require('request-promise');
+const requestPromise = require('request-promise');
 
+const request = requestPromise.defaults({ json: true });
+
+let file;
 let fileUuid;
 let fileArrayLength;
 
 describe('Files unit test', function () {
   it('should upload a file and retrieve a file object', async function () {
-    await Promise.delay(1000);
-
     const testFilePath = path.join(__dirname, 'test.gcode');
-
-    const fileUploadReply = await request({
+    const fileUploadReply = await request.post({
       url: 'http://localhost:1337/consumable',
-      method: 'POST',
       formData: {
         consumable: fs.createReadStream(testFilePath),
       },
-      json: true,
     })
     .catch(uploadError => console.log(uploadError));
 
-    console.log(fileUploadReply);
+    should.ok(Array.isArray(fileUploadReply));
+    should.ok(fileUploadReply.length === 1);
+    file = fileUploadReply[0];
+    file.should.have.property('id');
+    file.should.have.property('filename');
+    file.should.have.property('filepath');
 
-    // const file = fs.createReadStream(testFilePath);
-    // const formData = { file };
-    // const requestParams = {
-    //   method: 'POST',
-    //   uri: 'http://localhost:1337/consumable',
-    //   formData,
-    //   json: true,
-    // };
-    
-    // const uploadReply = await request(requestParams)
-    // .catch(uploadError => console.log('upload error', uploadError));
+    // The file's id and the filepath should be identical
+    const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/;
+    const filepathParsed = file.filepath.match(uuidRegex);
+    should.ok(Array.isArray(filepathParsed));
+    should(file.id).equal(filepathParsed[0]);
+  });
 
-    // console.log('upload reply!', uploadReply);
-    // const files = uploadReply.data;
-    // // Check that the returned object is an array with a single file object
-    // // The file object should have a uuid and a name
-    // should(files.length).equal(1);
-    // should(!!files.uuid);
-    // should(!!files.name);
-    // should(uploadReply.status).equal(200);
-    // should(uploadReply.query).equal('Upload File');
-  // });
+  it('should retrieve a dictionary of files', async function () {
+    const getFilesReply = await request({ url: 'http://localhost:1337/consumable' })
+    .catch(getFilesError => console.log(getFilesError));
 
-  // it('should retrieve a dictionary of files', function (done) {
-  //   const requestParams = {
-  //     method: 'GET',
-  //     uri: 'http://localhost:9000/v1/files',
-  //     json: true,
-  //   };
-  //   request(requestParams)
-  //   .then((getFilesReply) => {
-  //     const files = getFilesReply.data;
-  //     should(files.constructor).equal(Object);
-  //     should(getFilesReply.status).equal(200);
-  //     should(getFilesReply.query).equal('Get Files');
-
-  //     fileArrayLength = Object.keys(files).length;
-  //     fileUuid = files[Object.keys(files)[0]].uuid;
-  //     done();
-  //   })
-  //   .catch((err) => {
-  //     logger.error(err);
-  //     done();
-  //   });
-  // });
+    console.log('get file reply', getFilesReply);
+  });
 
   // it('should retrieve an a single file', function (done) {
   //   const requestParams = {
@@ -151,5 +122,5 @@ describe('Files unit test', function () {
   //     logger.error(err);
   //     done();
   //   });
-  });
+  // });
 });

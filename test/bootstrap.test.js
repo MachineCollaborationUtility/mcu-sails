@@ -20,9 +20,22 @@ try {
 
 before(function sailsStartHook(done) {
   // Increase the Mocha timeout so that Sails has enough time to lift.
-  this.timeout(5000);
+  this.timeout(10000);
 
-  sails.lift(rc('sails'), (err) => {
+  sails.lift({
+    connections: {
+      // Replace the following with whatever suits you.
+      testDb: {
+        adapter: 'sails-postgresql',
+        host: 'localhost',
+        database: 'mcu_sails_test',
+      },
+    },
+    models: {
+      connection: 'testDb',
+      migrate: 'drop',
+    },
+  }, (err) => {
     if (err) { return done(err); }
     // here you can load fixtures, etc.
     return done(err, sails);
