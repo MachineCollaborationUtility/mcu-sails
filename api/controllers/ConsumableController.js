@@ -42,12 +42,18 @@ module.exports = {
   },
 
   findOne: async function findOne(req, res) {
+    const allFiles = await Consumable.find();
     const consumable = await Consumable.findOne({ id: req.param('id') });
     if (req.param('download') === 'true') {
       res.attachment(consumable.filepath);
       res.set('Content-Disposition', `attachment; filename="${consumable.filename}"`);
       return res.ok();
     }
+
+    if (!consumable) {
+      return res.serverError(`Consumable with id "${req.param('id')}" not found`);
+    }
+
     return res.json(consumable);
   },
 

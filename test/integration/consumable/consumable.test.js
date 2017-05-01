@@ -8,7 +8,6 @@ const requestPromise = require('request-promise');
 const request = requestPromise.defaults({ json: true });
 
 let file;
-let fileUuid;
 let fileArrayLength;
 
 describe('Files unit test', function () {
@@ -22,9 +21,11 @@ describe('Files unit test', function () {
     })
     .catch(uploadError => console.log(uploadError));
 
-    should.ok(Array.isArray(fileUploadReply));
-    should.ok(fileUploadReply.length === 1);
     file = fileUploadReply[0];
+    fileArrayLength = fileUploadReply.length;
+
+    should.ok(Array.isArray(fileUploadReply));
+    should.ok(fileArrayLength === 1);
     file.should.have.property('id');
     file.should.have.property('filename');
     file.should.have.property('filepath');
@@ -36,51 +37,28 @@ describe('Files unit test', function () {
     should(file.id).equal(filepathParsed[0]);
   });
 
-  it('should retrieve a dictionary of files', async function () {
+  it('should retrieve an array of files', async function () {
     const getFilesReply = await request({ url: 'http://localhost:1337/consumable' })
     .catch(getFilesError => console.log(getFilesError));
 
-    console.log('get file reply', getFilesReply);
+    should.ok(Array.isArray(getFilesReply));
+    should(getFilesReply.length).equal(fileArrayLength);
   });
 
-  // it('should retrieve an a single file', function (done) {
-  //   const requestParams = {
-  //     method: 'GET',
-  //     uri: `http://localhost:9000/v1/files/${fileUuid}`,
-  //     json: true,
-  //   };
-  //   request(requestParams)
-  //   .then((getFileReply) => {
-  //     const file = getFileReply.data;
-  //     should(file.uuid).equal(fileUuid);
-  //     should(getFileReply.status).equal(200);
-  //     should(getFileReply.query).equal('Get File');
-  //     done();
-  //   })
-  //   .catch((err) => {
-  //     logger.error(err);
-  //     done();
-  //   });
-  // });
+  it('should retrieve an a single file', async function () {
+    const getFileReply = await request({ url: `http://localhost:1337/consumable/${file.id}` })
+    .catch(getFileError => console.log(getFileError));
 
-  // it('should fail when trying to retrieve a nonexistent file', function (done) {
-  //   const requestParams = {
-  //     method: 'GET',
-  //     uri: `http://localhost:9000/v1/files/${fileUuid}foobar`,
-  //     json: true,
-  //   };
-  //   request(requestParams)
-  //   .then((getFileReply) => {
-  //     should(getFileReply).equal(false);
-  //     done();
-  //   })
-  //   .catch((ex) => {
-  //     should(ex.error.error).equal(`File ${fileUuid}foobar not found`);
-  //     should(ex.error.status).equal(500);
-  //     should(ex.error.query).equal('Get File');
-  //     done();
-  //   });
-  // });
+    should.deepEqual(file, getFileReply);
+  });
+
+  it('should fail when trying to retrieve a nonexistent file', async function () {
+    await request({ url: 'http://localhost:1337/consumable/foobar' })
+    .catch((getFakeFileError) => {
+      should(getFakeFileError.statusCode).equal(500);
+      should(getFakeFileError.error).equal('Consumable with id "foobar" not found');
+    });
+  });
 
   // it('should delete the file that was originally uploaded', function (done) {
   //   const requestParams = {
