@@ -31,7 +31,7 @@ exports.up = function(db, callback) {
       db.createTable('job', {
         id: { type: 'string', primaryKey: true },
         botUuid: 'string',
-        fileUuid: 'string',
+        consumableUuid: 'string',
         state: 'string',
         started: 'string',
         elapsed: 'string',

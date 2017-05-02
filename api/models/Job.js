@@ -22,18 +22,26 @@ module.exports = {
       type: 'string',
       unique: true,
       uuidv4: true,
-      defaultsTo: () => uuid.v4(),
+      required: true,
     },
-    fileUuid: {
+    consumableUuid: {
       type: 'string',
       unique: true,
       uuidv4: true,
-      defaultsTo: () => uuid.v4(),
+      required: true,
     },
-    state: { type: 'string' },
+    state: {
+      type: 'string',
+      defaultsTo: 'initializing',
+    },
     started: { type: 'string' },
     elapsed: { type: 'string' },
     percentComplete: { type: 'float' },
+    toJSON: function () {
+      const obj = this.toObject();
+      delete obj.createdAt;
+      delete obj.updatedAt;
+      return obj;
+    },
   },
 };
-
